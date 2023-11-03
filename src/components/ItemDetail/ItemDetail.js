@@ -4,7 +4,15 @@ import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { CartContext } from "../../context/CartContext";
 
-const ItemDetail = ({ id, name, img, category, description, price, stock }) => {
+const ItemDetail = ({
+  id,
+  name,
+  image,
+  category,
+  description,
+  price,
+  stock,
+}) => {
   const [quantityAdded, setQuantityAdded] = useState(0);
 
   const { addItem } = useContext(CartContext);
@@ -16,6 +24,7 @@ const ItemDetail = ({ id, name, img, category, description, price, stock }) => {
       id,
       name,
       price,
+      image,
     };
 
     addItem(item, quantity);
@@ -27,7 +36,7 @@ const ItemDetail = ({ id, name, img, category, description, price, stock }) => {
         <h2 className="ItemHeader">{name}</h2>
       </header>
       <picture>
-        <img src={img} alt={name} className="ItemImg" />
+        <img src={image} alt={name} className="ItemImg" />
       </picture>
       <section>
         <p className="Info">Categoria: {category}</p>
@@ -43,7 +52,7 @@ const ItemDetail = ({ id, name, img, category, description, price, stock }) => {
           <ItemCount
             stock={stock}
             initial={1}
-            onAdd={(quantity) => console.log("Cantidad agregada", quantity)}
+            onAdd={(quantity) => handleOnAdd(quantity)}
           />
         )}
       </footer>

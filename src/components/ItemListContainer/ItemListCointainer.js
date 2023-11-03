@@ -10,25 +10,28 @@ const ItemListContainer = ({ greeting }) => {
   const { categoryId } = useParams();
 
   useEffect(() => {
-    const collectionRef = collection(db, "products");
-
-    const q = categoryId
-      ? query(collectionRef, where("category", "==", categoryId))
-      : collectionRef;
-
-    getDocs(q).then((response) => {
-      setProducts(
-        response.docs.map((doc) => {
-          return { ...doc.data(), id: doc.id };
+    if (db) {
+      console.log(db);
+      const collectionRef = collection(db, "items");
+      const q = categoryId
+        ? query(collectionRef, where("category", "==", categoryId))
+        : collectionRef;
+      getDocs(q)
+        .then((response) => {
+          const docsFromFirebase = response.docs;
+          setProducts(
+            docsFromFirebase?.map((doc) => {
+              return { ...doc.data(), id: doc.id };
+            })
+          );
         })
-      );
-    });
+        .catch((e) => {});
+    }
   }, [categoryId]);
 
   return (
     <div className="Title-S">
-      <h1 className="Title">{greeting} </h1>
-
+      <h1 className="Title">esta es mi tienda </h1>
       <section className="TitleContainer">
         <ItemList products={products} />
       </section>

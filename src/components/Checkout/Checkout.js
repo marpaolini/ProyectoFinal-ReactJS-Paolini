@@ -1,7 +1,5 @@
+import { useState, useContext } from "react";
 import {
-  useState,
-  useContext,
-  Timestamp,
   writeBatch,
   collection,
   getDocs,
@@ -9,8 +7,8 @@ import {
   where,
   documentId,
   addDoc,
-  id,
-} from "react";
+} from "firebase/firestore";
+
 import { db } from "../../services/firebase/firebaseConfig";
 import CartContext from "../../context/CartContext";
 import CheckoutForm from "../CheckoutForm/CheckoutForm";
@@ -33,7 +31,7 @@ const Checkout = () => {
         },
         items: cart,
         total: total,
-        date: Timestamp.fromDate(new Date()),
+        date: new Date(),
       };
       const batch = writeBatch(db);
 
@@ -54,7 +52,7 @@ const Checkout = () => {
         const stockDb = dataDoc.stockDb;
 
         const productAddedToCart = cart.find((prod) => prod.id === doc.id);
-        const prodQuantity = productAddedToCart?.prodQuantity;
+        const prodQuantity = productAddedToCart?.quantity;
         if (stockDb >= prodQuantity) {
           batch.update(doc.ref, { stock: stockDb - prodQuantity });
         } else {
@@ -69,7 +67,7 @@ const Checkout = () => {
 
         const orderAdded = await addDoc(orderRef, objOrder);
 
-        setOrderId(orderAdded, id);
+        setOrderId(orderAdded, "ajskdaldla");
         clearCart();
       } else {
         console.error("hay productos fuera de stock");
@@ -85,14 +83,12 @@ const Checkout = () => {
     return <h1>Se esta generando su orden...</h1>;
   }
 
-  if (orderId) {
-    return (
-      <div>
-        <h1>Checkout</h1>
-        <CheckoutForm onConfirm={createOrder} />
-      </div>
-    );
-  }
+  return (
+    <div>
+      <h1>Checkout</h1>
+      <CheckoutForm onConfirm={createOrder} />
+    </div>
+  );
 };
 
 export default Checkout;
