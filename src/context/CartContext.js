@@ -1,13 +1,16 @@
-import { createContext, useState } from "react";
+import React, { createContext, useState, useEffect } from "react";
 
 export const CartContext = createContext({
   cart: [],
+  total: 0, 
+  addItem: () => {},
+  removeItem: () => {},
+  clearCart: () => {}
 });
 
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
-
-  console.log(cart);
+  const [total, setTotal] = useState(0); 
 
   const addItem = (item, quantity) => {
     if (!isInCart(item.id)) {
@@ -30,8 +33,15 @@ export const CartProvider = ({ children }) => {
     return cart.some((prod) => prod.id === itemId);
   };
 
+  useEffect(() => {
+    const newTotal = cart.reduce((acc, item) => {
+      return acc + item.price * item.quantity;
+    }, 0);
+    setTotal(newTotal);
+  }, [cart]);
+
   return (
-    <CartContext.Provider value={{ cart, addItem, removeItem, clearCart }}>
+    <CartContext.Provider value={{ cart, total, addItem, removeItem, clearCart }}>
       {children}
     </CartContext.Provider>
   );

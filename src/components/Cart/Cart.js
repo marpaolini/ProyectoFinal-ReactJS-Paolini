@@ -5,7 +5,10 @@ import CartItem from "../CartItem/CartItem";
 
 const Cart = () => {
   const { cart, clearCart, totalQuantity, total } = useContext(CartContext);
-  debugger;
+  console.log("Cart component - cart:", cart);
+  console.log("Cart component - totalQuantity:", totalQuantity);
+  console.log("Cart component - total:", total);
+
   if (totalQuantity === 0) {
     return (
       <div className="cart_final">
