@@ -1,4 +1,4 @@
-import "./App.css";
+import './index.css';
 import NavBar from "./components/NavBar/NavBar";
 import ItemListContainer from './components/ItemListContainer/ItemListCointainer';
 import Checkout from './components/Checkout/Checkout';

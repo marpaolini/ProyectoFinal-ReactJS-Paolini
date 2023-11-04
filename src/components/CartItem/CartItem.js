@@ -4,7 +4,7 @@ import { useContext } from "react";
 
 const CartItem = (props) => {
   const { id, name, price, quantity, image } = props;
-  const { removeProducts } = useContext(CartContext);
+  const { removeItem } = useContext(CartContext);
 
   return (
     <div className="container">
@@ -15,7 +15,7 @@ const CartItem = (props) => {
         <h2>{name}</h2>
         <p>Cantidad: {quantity}</p>
         <p>Subtotal: {quantity * price}</p>
-        <button onClick={() => removeProducts(id)}>Eliminar</button>
+        <button onClick={() => removeItem(id)}>Eliminar</button>
       </div>
     </div>
   );
