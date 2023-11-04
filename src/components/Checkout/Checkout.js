@@ -1,4 +1,5 @@
 import { useState, useContext } from "react";
+import { Link } from "react-router-dom";
 import {
   writeBatch,
   collection,
@@ -16,7 +17,6 @@ import CheckoutForm from "../CheckoutForm/CheckoutForm";
 const Checkout = () => {
   const [loading, setLoading] = useState(false);
   const [orderId, setOrderId] = useState("");
-  const [outOfStockItems, setOutOfStockItems] = useState([]);
 
   const { cart, total, clearCart } = useContext(CartContext);
 
@@ -24,80 +24,79 @@ const Checkout = () => {
     setLoading(true);
 
     try {
+      const objOrder = {
+        buyer: {
+          name,
+          phone,
+          email,
+        },
+        items: cart,
+        total: total,
+        date: new Date(),
+      };
       const batch = writeBatch(db);
-      const productsRef = collection(db, "items");
-      const ids = cart.map((prod) => prod.id);
-
-      const productsFromFirestore = await getDocs(
-        query(productsRef, where(documentId(), "in", ids))
-      );
 
       const outOfStock = [];
 
-      productsFromFirestore.docs.forEach((doc) => {
+      const ids = cart.map((prod) => prod.id);
+
+      const productsRef = collection(db, "items");
+
+      const productsAddedFromFirestore = await getDocs(
+        query(productsRef, where(documentId(), "in", ids))
+      );
+
+      const { docs } = productsAddedFromFirestore;
+
+      docs.forEach((doc) => {
         const dataDoc = doc.data();
-        const productInCart = cart.find((prod) => prod.id === doc.id);
-        
-        if (dataDoc.stock >= productInCart.quantity) {
-          batch.update(doc.ref, { stock: dataDoc.stock - productInCart.quantity });
+        const stock = dataDoc.stock;
+
+        const productAddedToCart = cart.find((prod) => prod.id === doc.id);
+        const prodQuantity = productAddedToCart?.quantity;
+        if (stock >= prodQuantity) {
+          batch.update(doc.ref, { stock: stock - prodQuantity });
         } else {
-          outOfStock.push({ ...dataDoc, id: doc.id });
+          outOfStock.push({ id: doc.id, ...dataDoc });
         }
       });
 
       if (outOfStock.length === 0) {
+        await batch.commit();
+
         const orderRef = collection(db, "orders");
-        const objOrder = {
-          buyer: { name, phone, email },
-          items: cart,
-          total,
-          date: new Date(),
-        };
 
         const orderAdded = await addDoc(orderRef, objOrder);
+
         setOrderId(orderAdded.id);
         clearCart();
       } else {
         console.error("Hay productos fuera de stock");
-        setOutOfStockItems(outOfStock);
       }
-
     } catch (error) {
-      console.error("Error al crear la orden:", error);
+      console.log(error);
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading) {
-    return <h1>Se está generando su orden...</h1>;
-  }
-
   return (
-    <div>
-      <h1>Checkout</h1>
-      {orderId ? (
-        <div>
-          <h2>¡Gracias por tu compra!</h2>
-          <p>Tu número de orden es: {orderId}</p>
+    <div className="p-6 bg-gray-100 min-h-screen">
+      <h1 className="text-3xl font-bold mb-4">Checkout</h1>
+      {loading ? (
+        <h2 className="text-xl font-semibold mb-2">Se está generando su orden...</h2>
+      ) : orderId ? (
+        <div className="p-4 bg-white rounded shadow">
+          <h2 className="text-xl font-semibold mb-2">¡Gracias por tu compra!</h2>
+          <p className="mb-4">Tu número de orden es: <span className="font-bold">{orderId}</span></p>
+          <Link className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" to="/">Volver al inicio</Link>
         </div>
       ) : (
-        <>
-          {outOfStockItems.length > 0 && (
-            <div>
-              <h2>Los siguientes productos están agotados:</h2>
-              <ul>
-                {outOfStockItems.map((item) => (
-                  <li key={item.id}>{item.title}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-          <CheckoutForm onConfirm={createOrder} />
-        </>
+        <CheckoutForm onConfirm={createOrder} />
       )}
     </div>
   );
 };
 
 export default Checkout;
+

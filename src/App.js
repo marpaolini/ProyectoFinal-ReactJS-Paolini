@@ -3,7 +3,6 @@ import NavBar from "./components/NavBar/NavBar";
 import ItemListContainer from './components/ItemListContainer/ItemListCointainer';
 import Checkout from './components/Checkout/Checkout';
 import ItemDetailContainer from "./components/ItemDetailContainer/ItemDetailContainer";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CartProvider } from "./context/CartContext";
 import Cart from "./components/Cart/Cart";

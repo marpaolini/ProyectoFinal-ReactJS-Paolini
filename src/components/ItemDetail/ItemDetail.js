@@ -1,5 +1,4 @@
 import ItemCount from "../ItemCount/ItemCount";
-import Cart from "../Cart/Cart";
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { CartContext } from "../../context/CartContext";
@@ -31,22 +30,19 @@ const ItemDetail = ({
   };
 
   return (
-    <article className="CardItem">
-      <header className="Header">
-        <h2 className="ItemHeader">{name}</h2>
-      </header>
-      <picture>
-        <img src={image} alt={name} className="ItemImg" />
-      </picture>
-      <section>
-        <p className="Info">Categoria: {category}</p>
-        <p className="Info">Descripcion: {description}</p>
-        <p className="Info">Precio: ${price}</p>
-      </section>
-      <footer className="ItemFooter">
+    <div className="bg-white p-4 rounded shadow mb-4">
+      <h2 className="text-2xl font-bold mb-2">{name}</h2>
+      <img src={image} alt={name} className="w-full h-auto mb-4" />
+      <p className="text-gray-600 mb-4">Category: {category}</p>
+      <p className="text-gray-600 mb-4">Description: {description}</p>
+      <p className="text-2xl text-indigo-600 font-semibold mb-4">Price: ${price}</p>
+      <div className="flex items-center justify-between">
         {quantityAdded > 0 ? (
-          <Link to="/cart" className="Option">
-            Terminar Compra
+          <Link
+            to="/cart"
+            className="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600"
+          >
+            Finish Purchase
           </Link>
         ) : (
           <ItemCount
@@ -55,8 +51,8 @@ const ItemDetail = ({
             onAdd={(quantity) => handleOnAdd(quantity)}
           />
         )}
-      </footer>
-    </article>
+      </div>
+    </div>
   );
 };
 
