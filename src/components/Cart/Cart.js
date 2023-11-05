@@ -5,15 +5,12 @@ import CartItem from "../CartItem/CartItem";
 
 const Cart = () => {
   const { cart, clearCart, totalQuantity, total } = useContext(CartContext);
-  console.log("Cart component - cart:", cart);
-  console.log("Cart component - totalQuantity:", totalQuantity);
-  console.log("Cart component - total:", total);
 
   if (totalQuantity === 0) {
     return (
-      <div className="cart_final">
+      <div className="text-center">
         <h1>No hay items en el carrito</h1>
-        <Link to="/" className="btnFooter">
+        <Link to="/" className="text-pink-500 hover:text-pink-600 font-bold py-2 px-4 rounded">
           Inicio
         </Link>
       </div>
@@ -21,19 +18,23 @@ const Cart = () => {
   }
 
   return (
-    <div className="cart_final">
+    <div className="text-center">
       {cart.map((item) => (
         <CartItem key={item.id} {...item} />
       ))}
-      <h3>Total: ${total}</h3>
-      <button onClick={() => clearCart()} className="btn_limpiar">
-        Limpiar carrito
-      </button>
-      <Link to="/checkout" className="btn_check">
-        Checkout
-      </Link>
+      <h3 className="text-pink-500 text-xl font-bold my-4">Total: ${total}</h3>
+      <div className="inline-block">
+        <button onClick={() => clearCart()} className="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded-l shadow-lg mr-4">
+          Limpiar carrito
+        </button>
+        <Link to="/checkout" className="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded-r shadow-lg">
+          Checkout
+        </Link>
+      </div>
     </div>
   );
 };
 
 export default Cart;
+
+

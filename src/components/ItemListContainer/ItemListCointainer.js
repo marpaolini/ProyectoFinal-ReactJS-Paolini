@@ -10,31 +10,50 @@ const ItemListContainer = ({ greeting }) => {
   const { categoryId } = useParams();
 
   useEffect(() => {
-    if (db) {
-      console.log(db);
+    console.log("Categoría: ", categoryId)
+    const fetchProducts = async () => {
+      setLoading(true);
       const collectionRef = collection(db, "items");
-      const q = categoryId
-        ? query(collectionRef, where("category", "==", categoryId))
-        : collectionRef;
-      getDocs(q)
-        .then((response) => {
-          const docsFromFirebase = response.docs;
-          setProducts(
-            docsFromFirebase?.map((doc) => {
-              return { ...doc.data(), id: doc.id };
-            })
-          );
-        })
-        .catch((e) => {});
-    }
-  }, [categoryId]);
+      let q;
+
+      if (categoryId) {
+        q = query(collectionRef, where("category", "==", categoryId));
+      } else {
+        q = collectionRef;
+      }
+
+      try {
+        const querySnapshot = await getDocs(q);
+        const docsFromFirebase = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        console.log(docsFromFirebase);
+        setProducts(docsFromFirebase);
+      } catch (error) {
+        console.error("Error al obtener los documentos:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [categoryId]); 
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-xl font-semibold">Cargando productos...</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="Title-S">
-      <h1 className="Title">esta es mi tienda </h1>
-      <section className="TitleContainer">
-        <ItemList products={products} />
-      </section>
+    <div className="p-8">
+      <h1 className="text-3xl text-center text-pink-600 font-bold mb-8">
+        {greeting || 'Bienvenidos a mi tienda'}
+      </h1>
+      <ItemList products={products} />
     </div>
   );
 };

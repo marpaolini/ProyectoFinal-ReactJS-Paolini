@@ -74,22 +74,22 @@ const Checkout = () => {
         console.error("Hay productos fuera de stock");
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-4">Checkout</h1>
+    <div className="p-6 bg-pink-100 min-h-screen">
+      <h1 className="text-4xl font-bold mb-6 text-pink-600">Checkout</h1>
       {loading ? (
-        <h2 className="text-xl font-semibold mb-2">Se está generando su orden...</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-pink-500">Se está generando su orden...</h2>
       ) : orderId ? (
-        <div className="p-4 bg-white rounded shadow">
-          <h2 className="text-xl font-semibold mb-2">¡Gracias por tu compra!</h2>
-          <p className="mb-4">Tu número de orden es: <span className="font-bold">{orderId}</span></p>
-          <Link className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" to="/">Volver al inicio</Link>
+        <div className="p-6 bg-white rounded-lg shadow-md">
+          <h2 className="text-2xl font-semibold mb-4 text-pink-500">¡Gracias por tu compra!</h2>
+          <p className="mb-6 text-pink-400">Tu número de orden es: <span className="font-bold text-pink-600">{orderId}</span></p>
+          <Link className="inline-block bg-pink-500 text-white px-6 py-3 rounded hover:bg-pink-600 transition-colors" to="/">Volver al inicio</Link>
         </div>
       ) : (
         <CheckoutForm onConfirm={createOrder} />

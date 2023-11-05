@@ -13,36 +13,33 @@ const ItemDetail = ({
   stock,
 }) => {
   const [quantityAdded, setQuantityAdded] = useState(0);
-
   const { addItem } = useContext(CartContext);
 
   const handleOnAdd = (quantity) => {
     setQuantityAdded(quantity);
-
     const item = {
       id,
       name,
       price,
       image,
     };
-
     addItem(item, quantity);
   };
 
   return (
-    <div className="bg-white p-4 rounded shadow mb-4">
-      <h2 className="text-2xl font-bold mb-2">{name}</h2>
-      <img src={image} alt={name} className="w-full h-auto mb-4" />
-      <p className="text-gray-600 mb-4">Category: {category}</p>
-      <p className="text-gray-600 mb-4">Description: {description}</p>
-      <p className="text-2xl text-indigo-600 font-semibold mb-4">Price: ${price}</p>
-      <div className="flex items-center justify-between">
+    <div className="max-w-sm mx-auto bg-pink-50 p-6 rounded-lg shadow-md mb-5">
+      <h2 className="text-3xl font-bold mb-3 text-pink-600">{name}</h2>
+      <img src={image} alt={name} className="w-full h-auto mb-4 rounded" />
+      <p className="text-pink-500 mb-2">Categoría: {category}</p>
+      <p className="text-gray-700 mb-3">Descripción: {description}</p>
+      <p className="text-2xl text-pink-500 font-semibold mb-4">Precio: ${price}</p>
+      <div className="flex flex-col items-center justify-between">
         {quantityAdded > 0 ? (
           <Link
             to="/cart"
-            className="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600"
+            className="bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600 transition-colors duration-300 ease-in-out text-lg"
           >
-            Finish Purchase
+            Finalizar compra
           </Link>
         ) : (
           <ItemCount
@@ -57,3 +54,4 @@ const ItemDetail = ({
 };
 
 export default ItemDetail;
+
